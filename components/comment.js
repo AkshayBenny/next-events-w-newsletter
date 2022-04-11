@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 
 const Comment = (props) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [comment, setComment] = useState('');
+  const emailRef = useRef();
+  const commentRef = useRef();
+  const nameRef = useRef();
+
+  const email = emailRef.current.value;
+  const comment = commentRef.current.value;
+  const name = nameRef.current.value;
 
   const reqBody = {
     eventId: props.eventId,
@@ -29,20 +33,20 @@ const Comment = (props) => {
       <form className='space-y-4' onSubmit={submitHandler}>
         <div className='flex gap-6 '>
           <input
-            onChange={(e) => setName(e.target.value)}
+            ref={nameRef}
             type='text'
             placeholder='Name'
             className='border-gray-700 border-2 rounded px-4 py-2'
           />
           <input
-            onChange={(e) => setEmail(e.target.value)}
+            ref={emailRef}
             type='text'
             placeholder='Email'
             className='border-gray-700 border-2 rounded px-4 py-2'
           />
         </div>
         <textarea
-          onChange={(e) => setComment(e.target.value)}
+          ref={commentRef}
           className='border-gray-700 w-full border-2 rounded px-4 py-2'
           name='comment'
           id='comment'
