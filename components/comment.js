@@ -10,7 +10,6 @@ const Comment = (props) => {
   const name = nameRef.current.value;
 
   const reqBody = {
-    eventId: props.eventId,
     name: name,
     email: email,
     comment: comment,
@@ -18,7 +17,7 @@ const Comment = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    fetch('/api/comment', {
+    fetch(`/api/comment/${props.eventId}`, {
       method: 'POST',
       body: JSON.stringify(reqBody),
       headers: {
