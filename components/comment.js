@@ -1,13 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 
 const Comment = (props) => {
-  const emailRef = useRef();
-  const commentRef = useRef();
-  const nameRef = useRef();
-
-  const email = emailRef.current.value;
-  const comment = commentRef.current.value;
-  const name = nameRef.current.value;
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
+  const [name, setName] = useState('');
 
   const reqBody = {
     name: name,
@@ -17,6 +13,7 @@ const Comment = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
     fetch(`/api/comment/${props.eventId}`, {
       method: 'POST',
       body: JSON.stringify(reqBody),
@@ -32,20 +29,20 @@ const Comment = (props) => {
       <form className='space-y-4' onSubmit={submitHandler}>
         <div className='flex gap-6 '>
           <input
-            ref={nameRef}
+            onChange={(e) => setName(e.target.value)}
             type='text'
             placeholder='Name'
             className='border-gray-700 border-2 rounded px-4 py-2'
           />
           <input
-            ref={emailRef}
+            onChange={(e) => setEmail(e.target.value)}
             type='text'
             placeholder='Email'
             className='border-gray-700 border-2 rounded px-4 py-2'
           />
         </div>
         <textarea
-          ref={commentRef}
+          onChange={(e) => setComment(e.target.value)}
           className='border-gray-700 w-full border-2 rounded px-4 py-2'
           name='comment'
           id='comment'
