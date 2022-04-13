@@ -2,6 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/subs": "pages/api/subs.js",
-  "/events/subs": "pages/events/subs.js"
+  "/": "pages/index.js",
+  "/events": "pages/events.js",
+  "/api/subs": "pages/api/subs.js"
 }
