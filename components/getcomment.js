@@ -14,7 +14,6 @@ const GetComment = (props) => {
       console.log(err);
     }
   };
-  console.log('Res commments dta>>>>>>>>>>>>', comments);
 
   //   const filteredComments = comments.comments.filter(
   //     (item) => item.eventId === props.event.Id

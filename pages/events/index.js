@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import EventList from '../../components/events/event-list';
 import EventsSearch from '../../components/events/events-search';
 import NewsLetter from '../../components/newsletter/newsletter';
@@ -5,9 +6,14 @@ import NewsLetter from '../../components/newsletter/newsletter';
 const EventsPage = ({ allEvents }) => {
   return (
     <div>
-      <NewsLetter />
+      <div className="flex justify-between"><NewsLetter /> <Link href='/events/subs'>
+        <p className='font-bold cursor-pointer text-red-400'>
+          See all subscribers
+        </p>
+      </Link></div>
       <EventsSearch />
       <EventList items={allEvents} />
+     
     </div>
   );
 };
