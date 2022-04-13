@@ -1,6 +1,18 @@
 import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
+  const connectDB = async () => {
+    const client = await MongoClient.connect(
+      'mongodb+srv://admin:admin@cluster0.xir2j.mongodb.net/newsletter?retryWrites=true&w=majority'
+    );
+    return client;
+  };
+
+  const insertDocument = async (client, document) => {
+    const db = client.db();
+    await db.collection('emails').insertOne(document);
+  };
+
   if (req.method === 'POST') {
     const email = await req.body.email;
     if (!email) {
@@ -8,11 +20,23 @@ export default async function handler(req, res) {
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       res.status(422).json({ message: 'Invalid email address' });
     } else {
-      const client = await MongoClient.connect(MONGO_URL);
+      let client;
 
-      const db = client.db();
-      await db.collection('emails').insertOne({ email: email });
-      client.close();
+      try {
+        client = await connectDB();
+      } catch (error) {
+        res.status(500).json({ message: 'Error connecting to database' });
+        return;
+      }
+
+      try {
+        await insertDocument(client, { email: email });
+        client.close();
+      } catch (error) {
+        res.status(500).json({ message: 'Error inserting data' });
+        return;
+      }
+
       res.status(201).json({ email: email });
     }
   } else {

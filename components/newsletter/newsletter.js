@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 const NewsLetter = (props) => {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const reqBody = {
     email: email,
@@ -9,7 +11,7 @@ const NewsLetter = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     fetch('/api/newsletter', {
       method: 'POST',
       body: JSON.stringify(reqBody),
@@ -18,7 +20,7 @@ const NewsLetter = (props) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => setLoading(false));
   };
   return (
     <form>
@@ -30,10 +32,12 @@ const NewsLetter = (props) => {
         className='border-2'
         placeholder='email'
       />
+      {loading && (
+        <p className='text-green-500 font-light'>Submitting data...</p>
+      )}
       <button className='bg-black text-white' onClick={submitHandler}>
         Submit
       </button>
-      <p>{email}</p>
     </form>
   );
 };

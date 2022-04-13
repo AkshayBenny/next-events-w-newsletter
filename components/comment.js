@@ -4,6 +4,7 @@ const Comment = (props) => {
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const reqBody = {
     name: name,
@@ -13,7 +14,7 @@ const Comment = (props) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     fetch(`/api/comment/${props.eventId}`, {
       method: 'POST',
       body: JSON.stringify(reqBody),
@@ -22,7 +23,10 @@ const Comment = (props) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        console.log(data);
+        setLoading(false);
+      });
   };
   return (
     <div className='flex justify-center items-center'>
@@ -52,6 +56,7 @@ const Comment = (props) => {
           Add comment
         </button>
       </form>
+      {loading && <p className='font-light text-red-500'>Submitting form...</p>}
     </div>
   );
 };

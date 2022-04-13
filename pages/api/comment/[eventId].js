@@ -1,7 +1,29 @@
 import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
-  const client = await MongoClient.connect(MONGO_URL);
+  const connectDB = async () => {
+    const client = await MongoClient.connect(
+      'mongodb+srv://admin:admin@cluster0.xir2j.mongodb.net/newsletter?retryWrites=true&w=majority'
+    );
+    return client;
+  };
+
+  const insertDocument = async (client, document) => {
+    const db = client.db();
+    await db.collection('comments').insertOne(document);
+  };
+
+  const getComment = async (client) => {
+    const db = client.db();
+    const commentsArray = await db
+      .collection('comments')
+      .find()
+      .sort({ _id: -1 })
+      .toArray();
+
+    return commentsArray;
+  };
+
   if (req.method === 'POST') {
     const id = req.query.eventId;
     const data = await req.body;
@@ -17,22 +39,44 @@ export default async function handler(req, res) {
 
     if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)) {
       res.status(422).json({ message: 'Invalid email address' });
+      return;
     } else {
-      const db = client.db();
-      await db.collection('comments').insertOne(newComment);
+      let client;
+      try {
+        client = await connectDB();
+      } catch (error) {
+        res.status(500).json({ message: 'Connecting to database failed' });
+        return;
+      }
+
+      try {
+        await insertDocument(client, newComment);
+      } catch (error) {
+        res.status(500).json({ message: 'Adding data to DB failed' });
+        return;
+      }
 
       res.status(201).json({ myData: newComment });
     }
   }
 
   if (req.method === 'GET') {
-    const db = client.db();
-    const commentsArray = await db
-      .collection('comments')
-      .find()
-      .sort({ _id: -1 })
-      .toArray();
-    res.status(200).json({ comments: commentsArray });
+    let client;
+
+    try {
+      client = await connectDB();
+    } catch (error) {
+      res.status(500).json({ message: 'Conneting to DB failed...' });
+      return;
+    }
+
+    try {
+      const commentsArray = await getComment(client);
+      res.status(200).json({ comments: commentsArray });
+      client.close();
+    } catch (error) {
+      res.status(500).json({ message: "Error couldn't fetch comments" });
+      return;
+    }
   }
-  client.close();
 }
