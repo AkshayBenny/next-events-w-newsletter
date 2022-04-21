@@ -10,7 +10,7 @@ const EventItem = (props) => {
   });
   const prettyLocation = location.replace(', ', '\n');
   return (
-    <div className='p-4 space-y-4 rounded border border-2 border-gray-100 hover:shadow-sm'>
+    <div className='p-4 space-y-4 rounded border  border-gray-100 hover:shadow-sm'>
       <Image
         className='rounded w-full h-96 object-cover'
         src={'/' + image}
