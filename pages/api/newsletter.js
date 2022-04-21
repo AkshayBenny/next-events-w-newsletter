@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 export default async function handler(req, res) {
   const connectDB = async () => {
     const client = await MongoClient.connect(
-      'mongodb+srv://admin:admin@cluster0.xir2j.mongodb.net/newsletter?retryWrites=true&w=majority'
+     process.env.mongoURL
     );
     return client;
   };
